@@ -6,6 +6,7 @@ import concurrent.futures
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import sqlite3
+import re
 import sys
 
 from git import GitRepo
@@ -173,11 +174,21 @@ def index_sparse():
         sys.stdout.flush()
         git = GitRepo(libpath(lib))
         sourceinfos = []
-        for foi in lib.sparse_files:
-            commitinfos = git.all_commits_with_metadata(path=foi)
-            print(f"- found {len(commitinfos)} versions of {foi}")
-            sys.stdout.flush()
-            sourceinfos += get_all_sourceinfos_parallel(git, lib.name, commitinfos)
+        #for foi in lib.sparse_files:
+        #    commitinfos = git.all_commits_with_metadata(path=foi)
+        #    print(f"- found {len(commitinfos)} versions of {foi}")
+        #    sys.stdout.flush()
+        #    sourceinfos += get_all_sourceinfos_parallel(git, lib.name, commitinfos)
+        re_cc_filename = re.compile(r'.*\.(c|cc|cpp|cxx|h|hh|hpp|hxx)$', re.I)
+        for g in lib.medium_files:
+            for foi in libpath(lib).glob(g):
+                if not foi.is_file() or not re_cc_filename.match(foi.name):
+                    continue
+                foi = foi.relative_to(libpath(lib))
+                commitinfos = git.all_commits_with_metadata(path=foi)
+                print(f"- found {len(commitinfos)} versions of {foi}")
+                sys.stdout.flush()
+                sourceinfos += get_all_sourceinfos_parallel(git, lib.name, commitinfos)
         print(f"- total {len(sourceinfos)} files")
         cur = con.cursor()
         cur.execute('DELETE FROM files WHERE library = ?', (lib.name,))

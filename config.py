@@ -21,7 +21,11 @@ libraries = [
             "ssl/s3_both.cc",
             "ssl/ssl_cipher.cc",
             "ssl/ssl_cert.cc",
-            "ssl/tls13_server.cc"]),
+            "ssl/tls13_server.cc"],
+            [
+            'crypto/**/*',
+            'bio/**/*',
+            ]),
     Library('botan',
             [
              "src/lib/tls/tls12/tls_server_impl_12.cpp",
@@ -60,7 +64,11 @@ libraries = [
             ['src/libFLAC/stream_encoder.c',
              'src/libFLAC/stream_decoder.c',
              'src/flac/encode.c',
-             'src/flac/decode.c']),
+             'src/flac/decode.c'],
+             [
+             'include/**/*',
+             'src/**/*',
+             ]),
     Library('fmt',
             ['src/os.cc',
              'src/fmt.cc']),
@@ -86,6 +94,9 @@ libraries = [
              "devel/ftoption.h",
              "src/psaux/psobjs.c",
              "include/freetype/internal/ftobjs.h",
+            ],
+            [
+            'src/**/*',
             ]),
     Library('googletest',
             ["googletest/src/gtest.cc",
@@ -130,6 +141,10 @@ libraries = [
              "src/OT/Layout/GDEF/GDEF.hh",
              "src/hb-subset.cc",
              "src/hb-ft.cc",
+            ],
+            [
+            'src/**/*',
+            'util/**/*',
             ]),
     Library('hunspell',
             ["src/hunspell/affixmgr.cxx",
